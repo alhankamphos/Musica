@@ -47,7 +47,7 @@
         /* Header */
         .header {
             text-align: center;
-            padding: 40px 0 30px;
+            padding: 30px 0 20px;
         }
 
         .logo {
@@ -71,24 +71,24 @@
             background: var(--bg-glass);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-xl);
-            padding: 24px;
+            padding: 20px;
             margin-bottom: 24px;
             backdrop-filter: blur(20px);
         }
 
         .input-group {
             position: relative;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .input-field {
             width: 100%;
-            padding: 16px 20px;
+            padding: 14px 18px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 15px;
             transition: all 0.3s;
         }
 
@@ -104,12 +104,12 @@
 
         .btn-primary {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
             border: none;
             border-radius: 14px;
             color: var(--bg-dark);
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -130,7 +130,7 @@
             background: var(--bg-glass);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-xl);
-            padding: 28px;
+            padding: 24px;
             margin-bottom: 24px;
             backdrop-filter: blur(20px);
             display: none;
@@ -138,6 +138,18 @@
 
         .player-card.active {
             display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .album-art {
@@ -301,28 +313,28 @@
         }
 
         .song-count {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--neon-cyan);
+            color: var(--text-primary);
         }
 
         .song-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .song-item {
             background: var(--bg-glass);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 14px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -337,10 +349,10 @@
         }
 
         .song-thumbnail {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
-            border-radius: 12px;
+            border-radius: 10px;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -357,9 +369,9 @@
         }
 
         .song-item-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -372,12 +384,12 @@
 
         .song-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .icon-btn {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             background: rgba(255, 255, 255, 0.08);
             border: none;
             border-radius: 50%;
@@ -386,12 +398,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             transition: all 0.3s;
         }
 
         .icon-btn:active {
             transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .icon-btn svg {
+            opacity: 0.8;
+        }
+
+        .icon-btn:hover svg {
+            opacity: 1;
         }
 
         /* Modal */
@@ -889,8 +910,20 @@
                         <div class="song-item-duration">${song.artist}</div>
                     </div>
                     <div class="song-actions">
-                        <button class="icon-btn" onclick="event.stopPropagation(); editSong(${index})">✏️</button>
-                        <button class="icon-btn" onclick="event.stopPropagation(); deleteSong(${index})">🗑️</button>
+                        <button class="icon-btn" onclick="event.stopPropagation(); editSong(${index})" aria-label="Editar">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" onclick="event.stopPropagation(); deleteSong(${index})" aria-label="Eliminar">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             `).join('');
