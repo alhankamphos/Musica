@@ -663,7 +663,6 @@
             isPlaying: false,
             shuffle: false,
             repeat: false,
-            processedCount: 0,
             isAuthenticated: false
         };
 
@@ -742,11 +741,6 @@
                 state.songs = JSON.parse(saved);
                 updateLibrary();
             }
-            
-            const count = localStorage.getItem('musicaProcessedCount');
-            if (count) {
-                state.processedCount = parseInt(count);
-            }
 
             const auth = localStorage.getItem('musicaAuth');
             if (auth) {
@@ -757,7 +751,6 @@
         // Save songs to storage
         function saveSongs() {
             localStorage.setItem('musicaSongs', JSON.stringify(state.songs));
-            localStorage.setItem('musicaProcessedCount', state.processedCount.toString());
         }
 
         // Extract YouTube ID
@@ -765,6 +758,25 @@
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
             const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // Get YouTube video title
+        async function getYouTubeTitle(videoId) {
+            try {
+                // Usar la función serverless de Vercel
+                const response = await fetch(`/api/youtube-title?videoId=${videoId}`);
+                const data = await response.json();
+                
+                if (data.title) {
+                    return data.title;
+                }
+                
+                // Si la API falla, usar nombre genérico
+                return 'Mi Canción';
+            } catch (error) {
+                console.error('Error obteniendo título:', error);
+                return 'Mi Canción';
+            }
         }
 
         // Add song from YouTube
@@ -778,28 +790,33 @@
                 return;
             }
 
-            // Check limit
-            if (state.processedCount >= 10 && !state.isAuthenticated) {
+            // Check limit - ahora verifica canciones actuales en biblioteca
+            if (state.songs.length >= 10 && !state.isAuthenticated) {
                 alert('⚠️ Has alcanzado el límite de 10 canciones. Por favor regístrate para continuar.');
                 return;
             }
 
             elements.addSongBtn.disabled = true;
-            elements.addSongBtn.textContent = '⏳ Procesando...';
+            elements.addSongBtn.textContent = '⏳ Obteniendo info...';
 
             try {
-                // Get video info (simulado - en producción usarías una API real)
+                // Get real video title
+                const videoTitle = await getYouTubeTitle(videoId);
+                
+                elements.addSongBtn.textContent = '⏳ Procesando...';
+
+                // Get video info
                 const song = {
                     id: Date.now(),
                     videoId: videoId,
-                    title: `Canción ${state.songs.length + 1}`,
+                    title: videoTitle,
                     artist: 'YouTube',
                     thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
                     duration: 0,
                     url: url // En producción esto sería el MP3 convertido
                 };
 
-                // Show edit modal
+                // Show edit modal with real title
                 elements.editSongName.value = song.title;
                 elements.editModal.classList.add('active');
 
@@ -818,12 +835,11 @@
 
                 // Add song to library
                 state.songs.push(song);
-                state.processedCount++;
                 saveSongs();
                 updateLibrary();
 
                 // Show install modal after 2nd song
-                if (state.processedCount === 2) {
+                if (state.songs.length === 2) {
                     setTimeout(() => {
                         elements.installModal.classList.add('active');
                     }, 500);
