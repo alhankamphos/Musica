@@ -267,6 +267,15 @@
             color: var(--neon-cyan);
         }
 
+        .control-btn svg {
+            opacity: 0.9;
+        }
+
+        .control-btn:hover svg,
+        .control-btn.active svg {
+            opacity: 1;
+        }
+
         .play-pause-btn {
             width: 72px;
             height: 72px;
@@ -274,6 +283,10 @@
             border: none;
             font-size: 28px;
             box-shadow: 0 10px 40px rgba(0, 255, 255, 0.4);
+        }
+
+        .play-pause-btn svg {
+            opacity: 1;
         }
 
         /* Visualizer */
@@ -606,11 +619,40 @@
 
             <!-- Controls -->
             <div class="controls">
-                <button class="control-btn" id="shuffleBtn">🔀</button>
-                <button class="control-btn" id="prevBtn">⏮️</button>
-                <button class="control-btn play-pause-btn" id="playPauseBtn">▶️</button>
-                <button class="control-btn" id="nextBtn">⏭️</button>
-                <button class="control-btn" id="repeatBtn">🔁</button>
+                <button class="control-btn" id="shuffleBtn" aria-label="Aleatorio">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 3 21 3 21 8"></polyline>
+                        <line x1="4" y1="20" x2="21" y2="3"></line>
+                        <polyline points="21 16 21 21 16 21"></polyline>
+                        <line x1="15" y1="15" x2="21" y2="21"></line>
+                        <line x1="4" y1="4" x2="9" y2="9"></line>
+                    </svg>
+                </button>
+                <button class="control-btn" id="prevBtn" aria-label="Anterior">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                        <line x1="5" y1="19" x2="5" y2="5"></line>
+                    </svg>
+                </button>
+                <button class="control-btn play-pause-btn" id="playPauseBtn" aria-label="Reproducir/Pausar">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </button>
+                <button class="control-btn" id="nextBtn" aria-label="Siguiente">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                        <line x1="19" y1="5" x2="19" y2="19"></line>
+                    </svg>
+                </button>
+                <button class="control-btn" id="repeatBtn" aria-label="Repetir">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -952,7 +994,14 @@
             elements.albumArt.classList.add('playing');
             
             state.isPlaying = true;
-            elements.playPauseBtn.textContent = '⏸️';
+            
+            // Update play button to pause icon
+            const pauseIcon = `<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>`;
+            elements.playPauseBtn.innerHTML = pauseIcon;
+            
             animateVisualizer();
             updateLibrary();
         }
@@ -965,7 +1014,18 @@
             }
 
             state.isPlaying = !state.isPlaying;
-            elements.playPauseBtn.textContent = state.isPlaying ? '⏸️' : '▶️';
+            
+            // Update icon
+            const playIcon = `<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>`;
+            
+            const pauseIcon = `<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>`;
+            
+            elements.playPauseBtn.innerHTML = state.isPlaying ? pauseIcon : playIcon;
             
             if (state.isPlaying) {
                 elements.albumArt.classList.add('playing');
